@@ -44,5 +44,10 @@ namespace Phoneword
                     dialer.Dial(translatedNumber);
             }
         }
+
+        async void OnCallHistory(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new CallHistoryPage());
+        }
     }
 }
