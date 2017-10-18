@@ -68,8 +68,11 @@ namespace MTGLandBalancer
                 {
                     lineNum++;
                     string line = reader.ReadLine();
-                    line.Trim();
-                    names.Add(line);
+                    line = line.Trim();
+                    if (!TitleLine(line))
+                    {
+                        names.Add(line);
+                    }
                 }
                 reader.Close();
 
@@ -100,6 +103,8 @@ namespace MTGLandBalancer
                         int blueCount = 0;
                         int greenCount = 0;
                         int redCount = 0;
+
+                        List<string> failures = new List<string>();
                         
                         foreach(string name in names)
                         {
@@ -115,11 +120,8 @@ namespace MTGLandBalancer
                             }
                             else
                             {
-                                string message = "Could not find: '" + name + "' in database\nPlease check the spelling.";
-                                MessageBox.Show(message, "Card Not Found", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                                success = false;
-                                break;
-
+                                failures.Add(name);
+                                success = false;                    
                             }
                         }
 
@@ -163,9 +165,69 @@ namespace MTGLandBalancer
 
                             MessageBox.Show(results, "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
+                        else
+                        {
+                            string message = "Could not find the following cards:\n";
+                            foreach(string fail in failures)
+                            {
+                                message += "'" + fail + "'\n";
+                            }
+
+                            MessageBox.Show(message, "Could Not Find All Cards", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
+        }
+
+        private bool TitleLine(string line)
+        {
+            if(Regex.IsMatch(line, "Lands \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Artifact \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Vehicle \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Driver \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Enchantment \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Instant \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Sorcery \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Large Creature \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Medium Creature \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Small Creature \\("))
+            {
+                return true;
+            }
+            if (Regex.IsMatch(line, "Removal \\("))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private float DetermineLandCount(int devotionCount, int totalDevotion, int totalLands)
